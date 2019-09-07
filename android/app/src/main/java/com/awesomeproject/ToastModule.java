@@ -1,6 +1,7 @@
 package com.awesomeproject;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
@@ -78,6 +79,7 @@ public class ToastModule extends ReactContextBaseJavaModule {
         }
 
         InvokeScriptTransaction.Call call = new InvokeScriptTransaction.Call(function, argList);
+        Log.e(call.toString(), call.toString());
 
         FragmentActivity activity = (FragmentActivity) getCurrentActivity();
         if (activity == null) {
@@ -85,18 +87,22 @@ public class ToastModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        WavesSdk.keeper().send(activity, new InvokeScriptTransaction(
-                "WAVES",
-                dApp, call, paymentList), new KeeperCallback<KeeperTransactionResponse>() {
-            @Override
-            public void onSuccess(@NotNull KeeperResult.Success<KeeperTransactionResponse> success) {
-                callback.invoke("success");
-            }
+        try {
+            WavesSdk.keeper().send(activity, new InvokeScriptTransaction(
+                    "WAVES",
+                    dApp, call, paymentList), new KeeperCallback<KeeperTransactionResponse>() {
+                @Override
+                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransactionResponse> success) {
+                    callback.invoke("success");
+                }
 
-            @Override
-            public void onFailed(@NotNull KeeperResult.Error error) {
-                callback.invoke("error", error.getCode(), error.getMessage());
-            }
-        });
+                @Override
+                public void onFailed(@NotNull KeeperResult.Error error) {
+                    callback.invoke("error", error.getCode(), error.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            callback.invoke("error", 0, e.getMessage());
+        }
     }
 }

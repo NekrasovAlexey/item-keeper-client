@@ -30,57 +30,10 @@ import {Assets} from "./src/modules/Assets/Assets";
 import {Trade} from "./src/modules/Trade/Trade";
 import ruRU from '@ant-design/react-native/lib/locale-provider/ru_RU';
 
-const a = {
-  "type": 16,
-  "data": {
-    "fee": {
-      "tokens": "0.005",
-      "assetId": "WAVES"
-    },
-    "dApp": "3Mp5kngPzoQNMy98TMqPtZ36m43ijrKbhan",
-    "call": {
-      "function": "startAuction",
-      "args": [
-        {
-          "type": "integer",
-          "value": 10
-        },
-        {
-          "type": "integer",
-          "value": 10000000
-        },
-        {
-          "type": "string",
-          "value": "WAVES"
-        },
-        {
-          "type": "integer",
-          "value": 20000000
-        }
-      ]
-    },
-    "payment": [
-      {
-        "tokens": 1,
-        "assetId": "3rN8RLmBazR5snZ4qnJfLSSF6i81r5YP3ik6BdcvcgTy"
-      }
-    ]
-  }
-};
-
 class App extends React.Component {
   state = {
     status: 'init'
   };
-
-  send = () => ToastExample.show(
-      a.data.dApp,
-      a.data.call.function,
-      a.data.call.args,
-      a.data.payment,
-      (res, code, error) => this.setState({
-        status: 'updated' + res + ' ' + code + ' ' + error
-      }));
 
   render () {
     return (
@@ -93,15 +46,8 @@ class App extends React.Component {
             title: "Trade"
           }
         ]}>
-          <View style={{
-            flex: 1
-          }}>
-            <Text>{this.state.status}</Text>
-            <Button onPress={this.send}>send</Button>
-          </View>
-          {/*<Text>2</Text>*/}
           <Assets/>
-          {/*<Trade/>*/}
+          <Trade/>
         </Tabs>
       </Provider>
     );
