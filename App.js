@@ -6,6 +6,7 @@
  * @flow
  */
 
+import Button from '@ant-design/react-native/es/button';
 import React, {Fragment} from 'react';
 import {
   SafeAreaView,
@@ -25,8 +26,8 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import ToastExample from './ToastExample';
 import {Icon, TabBar, Tabs, Provider} from "@ant-design/react-native";
-// import {Assets} from "./src/modules/Assets/Assets";
-// import {Trade} from "./src/modules/Trade/Trade";
+import {Assets} from "./src/modules/Assets/Assets";
+import {Trade} from "./src/modules/Trade/Trade";
 import ruRU from '@ant-design/react-native/lib/locale-provider/ru_RU';
 
 const a = {
@@ -72,17 +73,14 @@ class App extends React.Component {
     status: 'init'
   };
 
-  componentDidMount() {
-    setTimeout(() => ToastExample.show(
+  send = () => ToastExample.show(
       a.data.dApp,
       a.data.call.function,
       a.data.call.args,
       a.data.payment,
       (res, code, error) => this.setState({
         status: 'updated' + res + ' ' + code + ' ' + error
-      })
-    ), 5000);
-  }
+      }));
 
   render () {
     return (
@@ -95,9 +93,14 @@ class App extends React.Component {
             title: "Trade"
           }
         ]}>
-          <Text>{this.state.status}</Text>
-          <Text>2</Text>
-          {/*<Assets/>*/}
+          <View style={{
+            flex: 1
+          }}>
+            <Text>{this.state.status}</Text>
+            <Button onPress={this.send}>send</Button>
+          </View>
+          {/*<Text>2</Text>*/}
+          <Assets/>
           {/*<Trade/>*/}
         </Tabs>
       </Provider>
