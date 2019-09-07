@@ -1,0 +1,1 @@
+export const myAccount = "3Mz1td457M34EA7wU1swt2DBQDZEDpsMtgE";
