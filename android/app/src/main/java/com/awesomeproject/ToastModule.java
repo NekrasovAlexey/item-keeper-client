@@ -131,17 +131,17 @@ public class ToastModule extends ReactContextBaseJavaModule {
         try {
 
 
-//            WavesSdk.keeper().sign(activity, tx, new KeeperCallback<KeeperTransaction>() {
-//                @Override
-//                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransaction> success) {
-//
-//                }
-//
-//                @Override
-//                public void onFailed(@NotNull KeeperResult.Error error) {
-//
-//                }
-//            });
+            WavesSdk.keeper().sign(activity, tx, new KeeperCallback<KeeperTransaction>() {
+                @Override
+                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransaction> success) {
+
+                }
+
+                @Override
+                public void onFailed(@NotNull KeeperResult.Error error) {
+
+                }
+            });
 
 
 
@@ -210,18 +210,23 @@ public class ToastModule extends ReactContextBaseJavaModule {
 
         try {
 
+            FragmentActivity activity = (FragmentActivity) getCurrentActivity();
+            if (activity == null) {
+                callback.invoke("error", 0, "null activity");
+                return;
+            }
 
-//            WavesSdk.keeper().sign(activity, tx, new KeeperCallback<KeeperTransaction>() {
-//                @Override
-//                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransaction> success) {
-//
-//                }
-//
-//                @Override
-//                public void onFailed(@NotNull KeeperResult.Error error) {
-//
-//                }
-//            });
+            WavesSdk.keeper().sign(activity, tx, new KeeperCallback<KeeperTransaction>() {
+                @Override
+                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransaction> success) {
+
+                }
+
+                @Override
+                public void onFailed(@NotNull KeeperResult.Error error) {
+
+                }
+            });
 
 
 

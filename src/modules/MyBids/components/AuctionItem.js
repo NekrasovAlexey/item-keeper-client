@@ -48,33 +48,44 @@ export class AuctionItem extends React.Component {
     this.setState({
       process: true
     });
-    const {item: {
-      id
-    }} = this.props;
 
-    const storageKey = `${myAccount}:${this.props.item.id}`;
-    const bidData = await RNSecureStorage.get(storageKey);
-    const {salt, amount} = JSON.parse(bidData);
+    try {
+      const {
+        item: {
+          id
+        }
+      } = this.props;
 
-    const res = await axios.post(
-      `${server}/auctions/${id}/reveal`,
-      {
-        salt: salt,
-        amount: amount / Math.pow(10, 8)
-      }
-    );
+      const storageKey = `${myAccount}:${this.props.item.id}`;
+      const bidData = await RNSecureStorage.get(storageKey);
+      const {salt, amount} = JSON.parse(bidData);
 
-    ToastExample.invoke(
-      res.data.data.dApp,
-      res.data.data.call.function,
-      res.data.data.call.args,
-      res.data.data.payment,
-      this.handleRevealResponse
-    );
+      const res = await axios.post(
+        `${server}/auctions/${id}/reveal`,
+        {
+          salt: salt,
+          amount: amount / Math.pow(10, 8)
+        }
+      );
 
-    this.setState({
-      process: false
-    });
+      ToastExample.invoke(
+        res.data.data.dApp,
+        res.data.data.call.function,
+        res.data.data.call.args,
+        res.data.data.payment,
+        this.handleRevealResponse
+      );
+
+      this.setState({
+        process: false
+      });
+    } catch (e) {
+      this.setState({
+        process: false
+      });
+
+      Toast.fail(e.message, 2);
+    }
   };
 
   handleWithdrawResponse = (res, code, error) => {
@@ -90,25 +101,33 @@ export class AuctionItem extends React.Component {
       process: true
     });
 
-    const {item: {
-      id
-    }} = this.props;
+    try {
+      const {item: {
+        id
+      }} = this.props;
 
-    const res = await axios.post(
-      `${server}/auctions/${id}/withdraw`
-    );
+      const res = await axios.post(
+        `${server}/auctions/${id}/withdraw`
+      );
 
-    ToastExample.invoke(
-      res.data.data.dApp,
-      res.data.data.call.function,
-      res.data.data.call.args,
-      res.data.data.payment,
-      this.handleWithdrawResponse
-    );
+      ToastExample.invoke(
+        res.data.data.dApp,
+        res.data.data.call.function,
+        res.data.data.call.args,
+        res.data.data.payment,
+        this.handleWithdrawResponse
+      );
 
-    this.setState({
-      process: false
-    });
+      this.setState({
+        process: false
+      });
+    } catch (e) {
+      this.setState({
+        process: false
+      });
+
+      Toast.fail(e.message, 2);
+    }
   };
 
   renderImage = () => {
