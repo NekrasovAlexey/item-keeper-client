@@ -159,7 +159,7 @@ export class CreateAuction extends React.Component {
       duration
     }, createAuctionInProcess} = this.state;
 
-    const disabled = Boolean(!deposit || !startPrice || !duration || startPrice > deposit);
+    const disabled = Boolean(!deposit || !startPrice || !duration || startPrice > deposit || createAuctionInProcess);
 
     return (
       <View style={{
@@ -167,7 +167,9 @@ export class CreateAuction extends React.Component {
         padding: 20,
       }}>
         <Button
-          style={{flex: 1}} type="primary" disabled={disabled} onPress={this.handleCreateAuction}
+          style={{flex: 1}} type="primary"
+          disabled={disabled}
+          onPress={this.handleCreateAuction}
           loading={createAuctionInProcess}
         >
           Create auction

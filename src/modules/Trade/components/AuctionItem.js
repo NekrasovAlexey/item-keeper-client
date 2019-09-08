@@ -113,9 +113,9 @@ export class AuctionItem extends React.Component {
     const {item: {
       deposit
     }} = this.props;
-    const {bidAmount} = this.state;
+    const {bidAmount, bidInProcess} = this.state;
 
-    const disabled = !bidAmount || Number(bidAmount) > (deposit / Math.pow(10, 8));
+    const disabled = !bidAmount || Number(bidAmount) > (deposit / Math.pow(10, 8)) || bidInProcess;
 
     return (
       <View style={{
@@ -123,8 +123,12 @@ export class AuctionItem extends React.Component {
         paddingTop: 20
       }}>
         <Button
-          loading={this.state.bidInProcess}
-          style={{flex: 1}} disabled={disabled} onPress={this.handleBid} type="primary">
+          loading={bidInProcess}
+          style={{flex: 1}}
+          disabled={disabled}
+          onPress={this.handleBid}
+          type="primary"
+        >
           Bid
         </Button>
       </View>
