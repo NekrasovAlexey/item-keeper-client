@@ -1,4 +1,4 @@
-import {SearchBar} from '@ant-design/react-native';
+import {ActivityIndicator, SearchBar} from '@ant-design/react-native';
 import Toast from '@ant-design/react-native/lib/toast';
 import axios from 'axios';
 import React from 'react';
@@ -10,6 +10,7 @@ import RNSecureStorage from 'rn-secure-storage'
 
 export class Trade extends React.Component {
   state = {
+    initialLoading: true,
     auctions: [],
     searchValue: undefined,
     appliedSearchValue: undefined,
@@ -34,7 +35,8 @@ export class Trade extends React.Component {
     );
 
     this.setState({
-      auctions: res.data
+      auctions: res.data,
+      initialLoading: false
     });
   };
 
@@ -129,15 +131,24 @@ export class Trade extends React.Component {
       }}>
         <SearchBar
           value={this.state.searchValue}
-          placeholder="Поиск..."
+          placeholder="Search..."
           onSubmit={this.handleSearchSubmit}
           onCancel={this.handleSearchClear}
           onChange={this.handleSearchChange}
         />
-        <AuctionList auctions={this.getFilteredAuctions()} selectedItemId={this.state.selectedItemId}
-                     onItemSelect={this.handleItemSelect}
-          onBid={this.handleBid}
-        />
+        {this.state.initialLoading ?
+          <View style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center"
+          }}>
+            <ActivityIndicator size="large" />
+          </View> :
+          <AuctionList auctions={this.getFilteredAuctions()} selectedItemId={this.state.selectedItemId}
+                       onItemSelect={this.handleItemSelect}
+                       onBid={this.handleBid}
+          />
+        }
       </View>
     )
   }

@@ -48,7 +48,7 @@ export class AuctionList extends React.Component {
         justifyContent: "center",
         alignItems: "center"
       }}>
-        <Text>Пока ничего нет</Text>
+        <Text>Nothing here</Text>
       </View>
     );
   };
@@ -67,14 +67,12 @@ export class AuctionList extends React.Component {
   };
 
   render () {
-    return (
+    return this.props.auctions.length ?
       <ScrollView style={{
         flex: 1
       }}>
-        {
-          this.props.auctions.length ? this.renderList() : this.renderEmpty()
-        }
-      </ScrollView>
-    );
+        {this.renderList()}
+      </ScrollView> :
+      this.renderEmpty();
   }
 }

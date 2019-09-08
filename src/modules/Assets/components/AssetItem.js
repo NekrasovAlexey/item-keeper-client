@@ -1,6 +1,7 @@
 import React from 'react';
 import {Image, View, Text} from "react-native";
 import { Button } from '@ant-design/react-native';
+import {emptyImage} from '../../../../consts';
 
 export class AssetItem extends React.Component {
   renderImage = () => {
@@ -9,7 +10,7 @@ export class AssetItem extends React.Component {
     }} = this.props;
 
     return (
-      <Image source={{uri: description}} style={{ width: 100, height: 100 }}/>
+      <Image source={{uri: description || emptyImage}} style={{ width: 100, height: 100 }}/>
     );
   };
 
@@ -23,9 +24,10 @@ export class AssetItem extends React.Component {
       <View style={{
         marginLeft: 20,
         flex: 1,
+        justifyContent: "center"
       }}>
-        <Text style={{fontSize: 20}}>{name}</Text>
-        <Text style={{fontSize: 20}}>{id}</Text>
+        <Text style={{fontSize: 18}}>{name}</Text>
+        <Text>{id}</Text>
       </View>
     )
   };

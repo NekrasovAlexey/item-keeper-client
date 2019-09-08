@@ -3,7 +3,7 @@ import React from 'react';
 import {Image, View, Text} from "react-native";
 import {Button, InputItem, List} from '@ant-design/react-native';
 import RNSecureStorage from "rn-secure-storage";
-import {myAccount} from '../../../../consts';
+import {emptyImage, myAccount} from '../../../../consts';
 
 export class AuctionItem extends React.Component {
   state = {
@@ -43,7 +43,7 @@ export class AuctionItem extends React.Component {
     }} = this.props;
 
     return (
-      <Image source={{uri: description}} style={{ width: 100, height: 100 }}/>
+      <Image source={{uri: description || emptyImage}} style={{ width: 100, height: 100 }}/>
     );
   };
 
@@ -59,8 +59,9 @@ export class AuctionItem extends React.Component {
       <View style={{
         marginLeft: 20,
         flex: 1,
+        justifyContent: "center"
       }}>
-        <Text style={{fontSize: 20}}>{name}</Text>
+        <Text style={{fontSize: 18}}>{name}</Text>
         <Text>{`Time left for bids: ${this.getTimeLeft()}`}</Text>
         <Text>{`My bid: ${this.state.myBid}`}</Text>
         <Text>{`Bids: ${unrevealed_count}`}</Text>

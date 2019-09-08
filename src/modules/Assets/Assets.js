@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View} from "react-native";
-import { SearchBar } from '@ant-design/react-native';
+import {ActivityIndicator, SearchBar} from '@ant-design/react-native';
 import {server, myAccount, refreshTimeout} from '../../../consts';
 import {AssetList} from "./components/AssetList";
 import {AssetItem} from "./components/AssetItem";
@@ -9,6 +9,7 @@ import axios from 'axios';
 
 export class Assets extends React.Component {
   state = {
+    initialLoading: true,
     assets: [],
     searchValue: undefined,
     appliedSearchValue: undefined,
@@ -34,7 +35,8 @@ export class Assets extends React.Component {
       );
 
       this.setState({
-        assets: res.data
+        assets: res.data,
+        initialLoading: false
       });
   };
 
@@ -91,17 +93,25 @@ export class Assets extends React.Component {
       }}>
         <SearchBar
           value={this.state.searchValue}
-          placeholder="Поиск..."
+          placeholder="Search..."
           onSubmit={this.handleSearchSubmit}
           onCancel={this.handleSearchClear}
           onChange={this.handleSearchChange}
         />
+        {this.state.initialLoading ?
+          <View style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center"
+          }}>
+            <ActivityIndicator size="large" />
+          </View> :
         <AssetList
           assets={this.getFilteredAssets()}
           onItemSelect={this.handleItemSelect}
           selectedItemId={this.state.selectedItemId}
           onCreateAuction={this.handleCreateAuction}
-        />
+        />}
       </View>
     );
   };
