@@ -35,13 +35,12 @@ export class AssetItem extends React.Component {
   renderActionsBlock = () => {
     return (
       <View style={{
-        flexDirection: "row",
         paddingTop: 20
       }}>
-        <Button style={{flex: 1}} onPress={this.props.onCreateAuction}>
+        <Button style={{flex: 1}} type="primary" onPress={this.props.onCreateAuction}>
           Create auction
         </Button>
-        <Button style={{flex: 1}}>
+        <Button style={{flex: 1, marginTop: 10}}>
           Transfer
         </Button>
       </View>
@@ -54,7 +53,7 @@ export class AssetItem extends React.Component {
     }} = this.props;
 
     return (
-      <View>
+      <View style={{paddingTop: 20}}>
         <Text>Отправитель: {sender}</Text>
       </View>
     )
@@ -74,8 +73,8 @@ export class AssetItem extends React.Component {
           {this.renderImage()}
           {this.renderInfo()}
         </View>
-        {selected && this.renderActionsBlock()}
         {selected && this.renderFullInfo()}
+        {selected && this.renderActionsBlock()}
       </View>
     );
   }

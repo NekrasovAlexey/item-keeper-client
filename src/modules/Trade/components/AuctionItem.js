@@ -1,7 +1,7 @@
 import Toast from '@ant-design/react-native/lib/toast';
 import React from 'react';
-import {Image, View, Text} from "react-native";
-import {Button, InputItem, List} from '@ant-design/react-native';
+import {Image, View, Text, TouchableOpacity} from 'react-native';
+import {Button, Icon, InputItem, List} from '@ant-design/react-native';
 import {emptyImage} from '../../../../consts';
 
 export class AuctionItem extends React.Component {

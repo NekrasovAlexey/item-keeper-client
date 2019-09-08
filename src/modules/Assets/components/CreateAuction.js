@@ -4,8 +4,8 @@ import React from 'react';
 import {myAccount, server} from '../../../../consts';
 import ToastExample from '../../../../ToastExample';
 import {AssetItem, Item} from "./AssetItem";
-import {Text, View} from 'react-native';
-import {Button, InputItem, List} from "@ant-design/react-native";
+import {Text, TouchableOpacity, View} from 'react-native';
+import {Button, Icon, InputItem, List} from '@ant-design/react-native';
 
 export class CreateAuction extends React.Component {
   state = {
@@ -13,7 +13,8 @@ export class CreateAuction extends React.Component {
       duration: 0,
       startPrice: 0,
       deposit: 0
-    }
+    },
+    createAuctionInProcess: false
   };
 
   handleDurationChange = (duration) => {
@@ -53,31 +54,64 @@ export class CreateAuction extends React.Component {
   };
 
   handleCreateAuction = async () => {
-    const {form: {duration, deposit, startPrice}} = this.state;
+    this.setState({
+      createAuctionInProcess: true
+    });
 
-    const res = await axios.post(
-      `${server}/auctions`,
-      {
-        assetId: this.props.item.id,
-        duration: Number(duration),
-        deposit: Number(deposit),
-        startPrice: Number(startPrice)
-      }
-    );
+    try {
+      const {form: {duration, deposit, startPrice}} = this.state;
 
-    ToastExample.show(
-      res.data.data.dApp,
-      res.data.data.call.function,
-      res.data.data.call.args,
-      res.data.data.payment,
-      this.handleCreateAuctionResponse
-    );
+      const res = await axios.post(
+        `${server}/auctions`,
+        {
+          assetId: this.props.item.id,
+          duration: Number(duration),
+          deposit: Number(deposit),
+          startPrice: Number(startPrice)
+        }
+      );
+
+      ToastExample.show(
+        res.data.data.dApp,
+        res.data.data.call.function,
+        res.data.data.call.args,
+        res.data.data.payment,
+        this.handleCreateAuctionResponse
+      );
+
+      this.setState({
+        createAuctionInProcess: false
+      });
+    } catch (e) {
+      this.setState({
+        createAuctionInProcess: false
+      });
+    }
+  };
+
+
+  renderBackBlock = () => {
+    return (
+      <TouchableOpacity
+        onPress={() => this.props.onClose()}
+        style={{
+          flexDirection: "row",
+          height: 40,
+          paddingLeft: 10,
+          alignItems: "center"
+        }}
+      >
+        <Icon name="caret-left"/><Text>Back</Text>
+      </TouchableOpacity>
+    )
   };
 
   renderDuration = () => {
     return (
       <List>
-        <InputItem type="number" onChange={this.handleDurationChange}  value={this.state.form.duration}>
+        <InputItem type="number" onChange={this.handleDurationChange}  value={this.state.form.duration}
+           // maxLength={3}
+        >
           <Text style={{width: 100}}>Duration:</Text>
         </InputItem>
       </List>
@@ -87,7 +121,9 @@ export class CreateAuction extends React.Component {
   renderStartPrice = () => {
     return (
       <List>
-        <InputItem type="number" onChange={this.handleStartPriceChange} value={this.state.form.startPrice}>
+        <InputItem type="number" onChange={this.handleStartPriceChange} value={this.state.form.startPrice}
+           // maxLength={3}
+        >
           <Text style={{width: 100}}>Start price:</Text>
         </InputItem>
       </List>
@@ -97,7 +133,9 @@ export class CreateAuction extends React.Component {
   renderDeposit = () => {
     return (
       <List>
-        <InputItem type="number" onChange={this.handleDepositChange} value={this.state.form.deposit}>
+        <InputItem type="number" onChange={this.handleDepositChange} value={this.state.form.deposit}
+                   // maxLength={3}
+        >
           <Text style={{width: 100}}>Deposit:</Text>
         </InputItem>
       </List>
@@ -106,10 +144,7 @@ export class CreateAuction extends React.Component {
 
   renderAuctionForm = () => {
     return (
-      <View style={{
-        flex: 1
-        }}
-      >
+      <View>
         {this.renderDuration()}
         {this.renderStartPrice()}
         {this.renderDeposit()}
@@ -122,7 +157,7 @@ export class CreateAuction extends React.Component {
       deposit,
       startPrice,
       duration
-    }} = this.state;
+    }, createAuctionInProcess} = this.state;
 
     const disabled = Boolean(!deposit || !startPrice || !duration || startPrice > deposit);
 
@@ -131,7 +166,10 @@ export class CreateAuction extends React.Component {
         flexDirection: "row",
         padding: 20,
       }}>
-        <Button style={{flex: 1}} type="primary" disabled={disabled} onPress={this.handleCreateAuction}>
+        <Button
+          style={{flex: 1}} type="primary" disabled={disabled} onPress={this.handleCreateAuction}
+          loading={createAuctionInProcess}
+        >
           Create auction
         </Button>
       </View>
@@ -143,6 +181,7 @@ export class CreateAuction extends React.Component {
       <View style={{
         flex: 1
       }}>
+        {this.renderBackBlock()}
         <AssetItem item={this.props.item}/>
         {this.renderAuctionForm()}
         {this.renderActionsBlock()}
