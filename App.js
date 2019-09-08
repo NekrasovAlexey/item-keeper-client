@@ -24,6 +24,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {InfoPlate} from './src/modules/Info/InfoPlate';
 import {MyBids} from './src/modules/MyBids/MyBids';
 import ToastExample from './ToastExample';
 import {Icon, TabBar, Tabs, Provider} from "@ant-design/react-native";
@@ -39,6 +40,7 @@ class App extends React.Component {
   render () {
     return (
       <Provider locale={ruRU}>
+        <InfoPlate/>
         <Tabs tabs={[
           {
             title: "My assets"
