@@ -6,6 +6,7 @@ import {AssetList} from "./components/AssetList";
 import {AssetItem} from "./components/AssetItem";
 import {CreateAuction} from "./components/CreateAuction";
 import axios from 'axios';
+import {Transfer} from './components/Transfer';
 
 export class Assets extends React.Component {
   state = {
@@ -78,6 +79,12 @@ export class Assets extends React.Component {
     });
   };
 
+  handleTransfer = () => {
+    this.setState({
+      screen: "TRANSFER"
+    });
+  };
+
   handleCloseAuction = (success) => {
     this.setState({
       selectedItemId: undefined,
@@ -112,6 +119,7 @@ export class Assets extends React.Component {
           onItemSelect={this.handleItemSelect}
           selectedItemId={this.state.selectedItemId}
           onCreateAuction={this.handleCreateAuction}
+          onTransfer={this.handleTransfer}
         />}
       </View>
     );
@@ -128,12 +136,25 @@ export class Assets extends React.Component {
     )
   };
 
+  renderTransfer = () => {
+    const {selectedItemId} = this.state;
+
+    return (
+      <Transfer
+        assetId={selectedItemId}
+        onClose={this.handleCloseAuction}
+      />
+    )
+  };
+
   renderView = () => {
     switch (this.state.screen) {
       case "VIEW":
         return this.renderAssetsViewer();
       case "CREATE_AUCTION":
         return this.renderCreateAuction();
+      case "TRANSFER":
+        return this.renderTransfer();
     }
   };
 

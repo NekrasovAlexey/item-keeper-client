@@ -15,6 +15,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.google.gson.Gson;
 import com.wavesplatform.sdk.WavesSdk;
+
 import com.wavesplatform.sdk.keeper.interfaces.KeeperCallback;
 import com.wavesplatform.sdk.keeper.interfaces.KeeperTransaction;
 import com.wavesplatform.sdk.keeper.interfaces.KeeperTransactionResponse;
@@ -22,12 +23,14 @@ import com.wavesplatform.sdk.keeper.model.KeeperIntentResult;
 import com.wavesplatform.sdk.keeper.model.KeeperResult;
 import com.wavesplatform.sdk.model.request.node.InvokeScriptTransaction;
 import com.facebook.react.bridge.Callback;
+import com.wavesplatform.sdk.model.request.node.TransferTransaction;
 import com.wavesplatform.sdk.model.response.node.transaction.InvokeScriptTransactionResponse;
 import com.wavesplatform.sdk.utils.RxUtil;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +68,7 @@ public class ToastModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void show(
+    public void invoke(
                     String dApp,
                      String function,
                      ReadableArray args, ReadableArray payments,
@@ -145,8 +148,85 @@ public class ToastModule extends ReactContextBaseJavaModule {
            // WavesSdk.keeper().finishProcess(activity, new KeeperIntentResult.SuccessSendResult(KeeperTransactionResponse));
 
 
-//            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
-            String seed = "toilet decade kick ready access merge skull achieve state visual diary labe";
+            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
+//            String seed = "toilet decade kick ready access merge skull achieve state visual diary labe";
+            //String r = tx.getSignedStringWithSeed(seed);
+            tx.setChainId((byte) 84);
+            tx.sign(seed);
+
+            Gson gson = new Gson();
+            String txJson = gson.toJson(tx).replace("\"\"", "null");
+
+
+
+
+
+
+            OkHttpClient client = new OkHttpClient();
+            Request rq = new Request.Builder().url("https://nodes-testnet.wavesnodes.com/transactions/broadcast").
+                    post(RequestBody.create(MediaType.parse("application/json"), txJson)).build();
+            client.newCall(rq).enqueue(new okhttp3.Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    call.cancel();
+                    callback.invoke("fail", 0);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    callback.invoke("success", 0, response.body().toString());
+                }
+            });
+            //callback.invoke(r, 0, r);
+
+
+        } catch (Exception e) {
+            callback.invoke("error", 0, e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void transfer(
+            String recipient,
+            String assetId,
+            Callback callback) {
+
+
+
+        TransferTransaction tx = new TransferTransaction(
+                assetId,
+                recipient,
+                1,
+                "",
+                "");
+
+        tx.setFee(100000L);
+
+
+        //callback.invoke(log.toString(), 0, log.toString());
+
+        try {
+
+
+//            WavesSdk.keeper().sign(activity, tx, new KeeperCallback<KeeperTransaction>() {
+//                @Override
+//                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransaction> success) {
+//
+//                }
+//
+//                @Override
+//                public void onFailed(@NotNull KeeperResult.Error error) {
+//
+//                }
+//            });
+
+
+
+            // WavesSdk.keeper().finishProcess(activity, new KeeperIntentResult.SuccessSendResult(KeeperTransactionResponse));
+
+
+            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
+//            String seed = "toilet decade kick ready access merge skull achieve state visual diary labe";
             //String r = tx.getSignedStringWithSeed(seed);
             tx.setChainId((byte) 84);
             tx.sign(seed);

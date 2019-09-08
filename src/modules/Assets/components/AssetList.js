@@ -25,7 +25,7 @@ export class AssetList extends React.Component {
         key={item.id}
         onPress={this.handleItemSelectFactory(item.id)}
       >
-        <AssetItem item={item} selected={this.props.selectedItemId === item.id} onCreateAuction={this.props.onCreateAuction}/>
+        <AssetItem item={item} selected={this.props.selectedItemId === item.id} onCreateAuction={this.props.onCreateAuction} onTransfer={this.props.onTransfer}/>
       </TouchableOpacity>
     ));
   };

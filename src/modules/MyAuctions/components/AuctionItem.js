@@ -8,6 +8,10 @@ import {emptyImage, myAccount, server} from '../../../../consts';
 import ToastExample from '../../../../ToastExample';
 
 export class AuctionItem extends React.Component {
+  state = {
+    process: false
+  };
+
   getTimeLeft = () => {
     const {
       item: {
@@ -27,6 +31,10 @@ export class AuctionItem extends React.Component {
   };
 
   handleWithdraw = async () => {
+    this.setState({
+      process: true
+    });
+
     const {item: {
       id
     }} = this.props;
@@ -35,13 +43,17 @@ export class AuctionItem extends React.Component {
       `${server}/auctions/${id}/withdraw`
     );
 
-    ToastExample.show(
+    ToastExample.invoke(
       res.data.data.dApp,
       res.data.data.call.function,
       res.data.data.call.args,
       res.data.data.payment,
       this.handleWithdrawResponse
     );
+
+    this.setState({
+      process: false
+    });
   };
 
   renderImage = () => {
@@ -89,6 +101,7 @@ export class AuctionItem extends React.Component {
     const {item: {
       phase
     }} = this.props;
+    const {process} = this.state;
 
     return (
       <View style={{
@@ -96,7 +109,12 @@ export class AuctionItem extends React.Component {
         paddingTop: 20
       }}>
         {phase === "SETTLE" && <Button
-          style={{flex: 1}} onPress={this.handleWithdraw} type="primary">
+          style={{flex: 1}}
+          onPress={this.handleWithdraw}
+          type="primary"
+          loading={process}
+          disabled={process}
+        >
           Withdraw
         </Button>}
       </View>

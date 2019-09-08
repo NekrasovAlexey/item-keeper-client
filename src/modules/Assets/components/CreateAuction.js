@@ -71,7 +71,7 @@ export class CreateAuction extends React.Component {
         }
       );
 
-      ToastExample.show(
+      ToastExample.invoke(
         res.data.data.dApp,
         res.data.data.call.function,
         res.data.data.call.args,
@@ -88,7 +88,6 @@ export class CreateAuction extends React.Component {
       });
     }
   };
-
 
   renderBackBlock = () => {
     return (

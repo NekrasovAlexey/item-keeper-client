@@ -46,7 +46,7 @@ export class AssetItem extends React.Component {
         <Button style={{flex: 1}} type="primary" onPress={this.props.onCreateAuction}>
           Create auction
         </Button>
-        <Button style={{flex: 1, marginTop: 10}}>
+        <Button style={{flex: 1, marginTop: 10}} onPress={this.props.onTransfer}>
           Transfer
         </Button>
       </View>

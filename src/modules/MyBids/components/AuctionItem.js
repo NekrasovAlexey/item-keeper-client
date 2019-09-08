@@ -9,7 +9,8 @@ import ToastExample from '../../../../ToastExample';
 
 export class AuctionItem extends React.Component {
   state = {
-    myBid: '...'
+    myBid: '...',
+    process: false
   };
 
   componentDidMount(): void {
@@ -44,6 +45,9 @@ export class AuctionItem extends React.Component {
   };
 
   handleReveal = async () => {
+    this.setState({
+      process: true
+    });
     const {item: {
       id
     }} = this.props;
@@ -60,13 +64,17 @@ export class AuctionItem extends React.Component {
       }
     );
 
-    ToastExample.show(
+    ToastExample.invoke(
       res.data.data.dApp,
       res.data.data.call.function,
       res.data.data.call.args,
       res.data.data.payment,
       this.handleRevealResponse
     );
+
+    this.setState({
+      process: false
+    });
   };
 
   handleWithdrawResponse = (res, code, error) => {
@@ -78,6 +86,10 @@ export class AuctionItem extends React.Component {
   };
 
   handleWithdraw = async () => {
+    this.setState({
+      process: true
+    });
+
     const {item: {
       id
     }} = this.props;
@@ -86,13 +98,17 @@ export class AuctionItem extends React.Component {
       `${server}/auctions/${id}/withdraw`
     );
 
-    ToastExample.show(
+    ToastExample.invoke(
       res.data.data.dApp,
       res.data.data.call.function,
       res.data.data.call.args,
       res.data.data.payment,
       this.handleWithdrawResponse
     );
+
+    this.setState({
+      process: false
+    });
   };
 
   renderImage = () => {
@@ -141,6 +157,7 @@ export class AuctionItem extends React.Component {
     const {item: {
       phase
     }} = this.props;
+    const {process} = this.state;
 
     return (
       <View style={{
@@ -148,11 +165,21 @@ export class AuctionItem extends React.Component {
         paddingTop: 20
       }}>
         {phase === "REVEAL" && <Button
-          style={{flex: 1}} onPress={this.handleReveal} type="primary">
+          style={{flex: 1}}
+          onPress={this.handleReveal}
+          type="primary"
+          loading={process}
+          disabled={process}
+        >
           Reveal
         </Button>}
         {phase === "SETTLE" && <Button
-          style={{flex: 1}} onPress={this.handleWithdraw} type="primary">
+          style={{flex: 1}}
+          onPress={this.handleWithdraw}
+          type="primary"
+          loading={process}
+          disabled={process}
+        >
           Withdraw
         </Button>}
       </View>

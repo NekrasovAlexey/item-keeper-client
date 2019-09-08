@@ -45,17 +45,22 @@ export class Trade extends React.Component {
       bidderAuctions
     ]);
 
-    const auctions = res[0].data.map(auction => {
-      const auctionId = auction.id;
+    const auctions = res[0].data
+      .filter(auction => {
+        const auctionId = auction.id;
 
-      const organizer = res[1].data.find(auction => auction.id === auctionId);
-      const bidder = res[2].data.find(auction => auction.id === auctionId);
+        return res[1].data.find(auction => auction.id !== auctionId);
+      })
+      .map(auction => {
+        const auctionId = auction.id;
 
-      return {
-        ...auction,
-        ownTag: organizer ? "org" : bidder ? "bid" : undefined
-      };
-    });
+        const bidder = res[2].data.find(auction => auction.id === auctionId);
+
+        return {
+          ...auction,
+          ownTag: bidder ? "bid" : undefined
+        };
+      });
 
     this.setState({
       auctions,
@@ -136,7 +141,7 @@ export class Trade extends React.Component {
 
       console.log('debug send', JSON.stringify(res.data));
 
-      ToastExample.show(
+      ToastExample.invoke(
         res.data.data.dApp,
         res.data.data.call.function,
         res.data.data.call.args,
