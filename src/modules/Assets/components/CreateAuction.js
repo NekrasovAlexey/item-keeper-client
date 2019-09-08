@@ -1,3 +1,4 @@
+import Toast from '@ant-design/react-native/lib/toast';
 import axios from 'axios';
 import React from 'react';
 import {myAccount, server} from '../../../../consts';
@@ -10,25 +11,25 @@ export class CreateAuction extends React.Component {
   state = {
     form: {
       duration: 0,
-      minPrice: 0,
+      startPrice: 0,
       deposit: 0
     }
   };
 
   handleDurationChange = (duration) => {
     this.setState({
-      from: {
+      form: {
         ...this.state.form,
         duration: duration ? Number(duration) : 0
       }
     })
   };
 
-  handleMinPriceChange = (minPrice) => {
+  handleStartPriceChange = (startPrice) => {
     this.setState({
       form: {
         ...this.state.form,
-        minPrice: minPrice ? Number(minPrice) : 0
+        startPrice: startPrice ? Number(startPrice) : 0
       }
     })
   };
@@ -42,27 +43,34 @@ export class CreateAuction extends React.Component {
     })
   };
 
+  handleCreateAuctionResponse = (res, code, error) => {
+    if (res === "success") {
+      Toast.success('Auction created', 2);
+      this.props.onClose(true);
+    } else {
+      Toast.fail(res + ' ' + code + ' ' + error, 2);
+    }
+  };
+
   handleCreateAuction = async () => {
-    const {duration, deposit, minPrice} = this.state;
+    const {form: {duration, deposit, startPrice}} = this.state;
 
     const res = await axios.post(
       `${server}/auctions`,
       {
         assetId: this.props.item.id,
-        duration,
-        deposit,
-        minPrice
+        duration: Number(duration),
+        deposit: Number(deposit),
+        startPrice: Number(startPrice)
       }
     );
 
     ToastExample.show(
-      res.data.dApp,
-      res.data.call.function,
-      res.data.call.args,
-      res.data.payment,
-      // (res, code, error) => this.setState({
-      //   status: 'updated' + res + ' ' + code + ' ' + error
-      // })
+      res.data.data.dApp,
+      res.data.data.call.function,
+      res.data.data.call.args,
+      res.data.data.payment,
+      this.handleCreateAuctionResponse
     );
   };
 
@@ -76,11 +84,11 @@ export class CreateAuction extends React.Component {
     )
   };
 
-  renderMinPrice = () => {
+  renderStartPrice = () => {
     return (
       <List>
-        <InputItem type="number" onChange={this.handleMinPriceChange} value={this.state.form.minPrice}>
-          MinPrice
+        <InputItem type="number" onChange={this.handleStartPriceChange} value={this.state.form.startPrice}>
+          StartPrice
         </InputItem>
       </List>
     );
@@ -103,20 +111,20 @@ export class CreateAuction extends React.Component {
         }}
       >
         {this.renderDuration()}
-        {this.renderMinPrice()}
+        {this.renderStartPrice()}
         {this.renderDeposit()}
       </View>
     )
   };
 
   renderActionsBlock = () => {
-    // const {form: {
-    //   deposit,
-    //   minPrice,
-    //   duration
-    // }} = this.state;
+    const {form: {
+      deposit,
+      startPrice,
+      duration
+    }} = this.state;
 
-    const disabled = false; // Boolean(!deposit || !minPrice || !duration);
+    const disabled = Boolean(!deposit || !startPrice || !duration || startPrice > deposit);
 
     return (
       <View style={{

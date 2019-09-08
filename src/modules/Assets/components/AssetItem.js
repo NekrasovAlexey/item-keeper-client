@@ -16,6 +16,7 @@ export class AssetItem extends React.Component {
   renderInfo = () => {
     const {item: {
       name,
+      id
     }} = this.props;
 
     return (
@@ -24,6 +25,7 @@ export class AssetItem extends React.Component {
         flex: 1,
       }}>
         <Text style={{fontSize: 20}}>{name}</Text>
+        <Text style={{fontSize: 20}}>{id}</Text>
       </View>
     )
   };

@@ -68,6 +68,14 @@ export class Assets extends React.Component {
     });
   };
 
+  handleCloseAuction = (success) => {
+    this.setState({
+      screen: "VIEW"
+    }, () => {
+      success && this.getAssets()
+    })
+  };
+
   renderAssetsViewer = () => {
     return (
       <View style={{
@@ -94,7 +102,10 @@ export class Assets extends React.Component {
     const {assets, selectedItemId} = this.state;
 
     return (
-      <CreateAuction item={assets.find(asset => asset.id === selectedItemId)}/>
+      <CreateAuction
+        item={assets.find(asset => asset.id === selectedItemId)}
+        onClose={this.handleCloseAuction}
+      />
     )
   };
 

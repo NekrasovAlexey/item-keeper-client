@@ -13,19 +13,34 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.google.gson.Gson;
 import com.wavesplatform.sdk.WavesSdk;
 import com.wavesplatform.sdk.keeper.interfaces.KeeperCallback;
+import com.wavesplatform.sdk.keeper.interfaces.KeeperTransaction;
 import com.wavesplatform.sdk.keeper.interfaces.KeeperTransactionResponse;
+import com.wavesplatform.sdk.keeper.model.KeeperIntentResult;
 import com.wavesplatform.sdk.keeper.model.KeeperResult;
 import com.wavesplatform.sdk.model.request.node.InvokeScriptTransaction;
 import com.facebook.react.bridge.Callback;
+import com.wavesplatform.sdk.model.response.node.transaction.InvokeScriptTransactionResponse;
+import com.wavesplatform.sdk.utils.RxUtil;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ToastModule extends ReactContextBaseJavaModule {
 
@@ -57,6 +72,7 @@ public class ToastModule extends ReactContextBaseJavaModule {
                      Callback callback) {
         List<InvokeScriptTransaction.Arg> argList = new ArrayList<>();
         List<InvokeScriptTransaction.Payment> paymentList = new ArrayList<>();
+        StringBuilder log = new StringBuilder();
         for (int i = 0; i < args.size(); i++) {
             ReadableMap arg = args.getMap(i);
             String type = arg.getString("type");
@@ -68,6 +84,9 @@ public class ToastModule extends ReactContextBaseJavaModule {
             }
             InvokeScriptTransaction.Arg invokeArg = new InvokeScriptTransaction.Arg(type, value);
             argList.add(invokeArg);
+
+            log.append("arg" + i + "= " + invokeArg.getValue() + ": " + invokeArg.getType());
+            log.append("\n");
         }
 
         for (int i = 0; i < payments.size(); i++) {
@@ -76,10 +95,15 @@ public class ToastModule extends ReactContextBaseJavaModule {
             String assetId = payment.getString("assetId");
             InvokeScriptTransaction.Payment invokePayment = new InvokeScriptTransaction.Payment(tokens, assetId);
             paymentList.add(invokePayment);
+
+            log.append("payment" + i + "= " + invokePayment.getAmount() + ": " + invokePayment.getAssetId());
+            log.append("\n");
         }
 
         InvokeScriptTransaction.Call call = new InvokeScriptTransaction.Call(function, argList);
-        Log.e(call.toString(), call.toString());
+
+        log.append("call " + function);
+        log.append("\n");
 
         FragmentActivity activity = (FragmentActivity) getCurrentActivity();
         if (activity == null) {
@@ -87,20 +111,71 @@ public class ToastModule extends ReactContextBaseJavaModule {
             return;
         }
 
+
+        InvokeScriptTransaction tx = new InvokeScriptTransaction(
+                null,
+                dApp, call, paymentList);
+        tx.setFee(500000L);
+
+        log.append("fee " + tx.getFee());
+        log.append("\n");
+        log.append("feeAssetId " + tx.getFeeAssetId());
+        log.append("\n");
+
+        log.append("tx:" + tx.toString());
+        //callback.invoke(log.toString(), 0, log.toString());
+
         try {
-            WavesSdk.keeper().send(activity, new InvokeScriptTransaction(
-                    "WAVES",
-                    dApp, call, paymentList), new KeeperCallback<KeeperTransactionResponse>() {
+
+
+            /*WavesSdk.keeper().sign(activity, tx, new KeeperCallback<KeeperTransaction>() {
                 @Override
-                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransactionResponse> success) {
-                    callback.invoke("success");
+                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransaction> success) {
+
                 }
 
                 @Override
                 public void onFailed(@NotNull KeeperResult.Error error) {
-                    callback.invoke("error", error.getCode(), error.getMessage());
+
                 }
             });
+            */
+             
+
+           // WavesSdk.keeper().finishProcess(activity, new KeeperIntentResult.SuccessSendResult(KeeperTransactionResponse));
+
+
+            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
+            //String r = tx.getSignedStringWithSeed(seed);
+            tx.setChainId((byte) 84);
+            tx.sign(seed);
+
+            Gson gson = new Gson();
+            String txJson = gson.toJson(tx);
+
+
+
+
+
+
+            OkHttpClient client = new OkHttpClient();
+            Request rq = new Request.Builder().url("https://nodes-testnet.wavesnodes.com/transactions/broadcast").
+                    post(RequestBody.create(MediaType.parse("application/json"), txJson)).build();
+            client.newCall(rq).enqueue(new okhttp3.Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    call.cancel();
+                    callback.invoke("fail", 0);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    callback.invoke("success", 0, response.body().toString());
+                }
+            });
+            //callback.invoke(r, 0, r);
+
+
         } catch (Exception e) {
             callback.invoke("error", 0, e.getMessage());
         }
