@@ -26,6 +26,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {InfoPlate} from './src/modules/Info/InfoPlate';
+import {MyAuctions} from './src/modules/MyAuctions/MyAuctions';
 import {MyBids} from './src/modules/MyBids/MyBids';
 import ToastExample from './ToastExample';
 import {Icon, TabBar, Tabs, Provider} from "@ant-design/react-native";
@@ -51,11 +52,15 @@ class App extends React.Component {
           },
           {
             title: "My bids"
+          },
+          {
+            title: "My auctions"
           }
         ]}>
           <Assets/>
           <Trade/>
           <MyBids/>
+          <MyAuctions/>
         </Tabs>
       </Provider>
     );
