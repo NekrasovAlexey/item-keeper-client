@@ -128,19 +128,19 @@ public class ToastModule extends ReactContextBaseJavaModule {
         try {
 
 
-            /*WavesSdk.keeper().sign(activity, tx, new KeeperCallback<KeeperTransaction>() {
-                @Override
-                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransaction> success) {
+//            WavesSdk.keeper().sign(activity, tx, new KeeperCallback<KeeperTransaction>() {
+//                @Override
+//                public void onSuccess(@NotNull KeeperResult.Success<KeeperTransaction> success) {
+//
+//                }
+//
+//                @Override
+//                public void onFailed(@NotNull KeeperResult.Error error) {
+//
+//                }
+//            });
 
-                }
 
-                @Override
-                public void onFailed(@NotNull KeeperResult.Error error) {
-
-                }
-            });
-            */
-             
 
            // WavesSdk.keeper().finishProcess(activity, new KeeperIntentResult.SuccessSendResult(KeeperTransactionResponse));
 
