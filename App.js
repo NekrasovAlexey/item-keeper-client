@@ -24,6 +24,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {MyBids} from './src/modules/MyBids/MyBids';
 import ToastExample from './ToastExample';
 import {Icon, TabBar, Tabs, Provider} from "@ant-design/react-native";
 import {Assets} from "./src/modules/Assets/Assets";
@@ -44,10 +45,14 @@ class App extends React.Component {
           },
           {
             title: "Trade"
+          },
+          {
+            title: "My bids"
           }
         ]}>
           <Assets/>
           <Trade/>
+          <MyBids/>
         </Tabs>
       </Provider>
     );
