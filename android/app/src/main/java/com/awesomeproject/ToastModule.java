@@ -92,7 +92,7 @@ public class ToastModule extends ReactContextBaseJavaModule {
         for (int i = 0; i < payments.size(); i++) {
             ReadableMap payment = payments.getMap(i);
             long tokens = payment.getInt("tokens");
-            String assetId = payment.getString("assetId");
+            String assetId = payment.hasKey("assetId") ? payment.getString("assetId") : "";
             InvokeScriptTransaction.Payment invokePayment = new InvokeScriptTransaction.Payment(tokens, assetId);
             paymentList.add(invokePayment);
 
@@ -145,7 +145,8 @@ public class ToastModule extends ReactContextBaseJavaModule {
            // WavesSdk.keeper().finishProcess(activity, new KeeperIntentResult.SuccessSendResult(KeeperTransactionResponse));
 
 
-            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
+//            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
+            String seed = "toilet decade kick ready access merge skull achieve state visual diary labe";
             //String r = tx.getSignedStringWithSeed(seed);
             tx.setChainId((byte) 84);
             tx.sign(seed);

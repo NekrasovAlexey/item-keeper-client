@@ -1,10 +1,12 @@
+import Toast from '@ant-design/react-native/lib/toast';
 import React from 'react';
 import {Image, View, Text} from "react-native";
 import {Button, InputItem, List} from '@ant-design/react-native';
 
 export class AuctionItem extends React.Component {
   state = {
-    bidAmount: 0
+    bidAmount: '0',
+    bidInProcess: false
   };
 
   getTimeLeft = () => {
@@ -17,8 +19,29 @@ export class AuctionItem extends React.Component {
 
   handleBidChange = (amount) => {
     this.setState({
-      bidAmount: amount ? Number(amount) : 0
+      bidAmount: amount ? amount : '0',
     });
+  };
+
+  handleBid = async () => {
+    this.setState({
+      bidInProcess: true
+    });
+
+    try {
+      await this.props.onBid(
+        this.props.item.id,
+        Number(this.state.bidAmount)
+      );
+
+      this.setState({
+        bidInProcess: false
+      });
+    } catch (e) {
+      this.setState({
+        bidInProcess: false
+      });
+    }
   };
 
   renderImage = () => {
@@ -39,7 +62,7 @@ export class AuctionItem extends React.Component {
         name
       },
       startPrice,
-      top_price,
+      deposit,
       unrevealed_count
     }} = this.props;
 
@@ -50,8 +73,8 @@ export class AuctionItem extends React.Component {
       }}>
         <Text style={{fontSize: 20}}>{name}</Text>
         <Text>{`Time left for bids: ${this.getTimeLeft()}`}</Text>
-        <Text>{`Start bid: ${startPrice}`}</Text>
-        <Text>{`Max bid: ${top_price}`}</Text>
+        <Text>{`Start bid: ${startPrice / Math.pow(10, 8)}`}</Text>
+        <Text>{`Max bid: ${deposit / Math.pow(10, 8)}`}</Text>
         <Text>{`Bids: ${unrevealed_count}`}</Text>
       </View>
     )
@@ -85,7 +108,9 @@ export class AuctionItem extends React.Component {
       <View style={{
         flexDirection: "row"
       }}>
-        <Button style={{flex: 1}} disabled={disabled} onPress={this.props.onBid} type="primary">
+        <Button
+          loading={this.state.bidInProcess}
+          style={{flex: 1}} disabled={disabled} onPress={this.handleBid} type="primary">
           Bid
         </Button>
       </View>
