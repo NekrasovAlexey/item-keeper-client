@@ -4,7 +4,7 @@ import React from 'react';
 import {myAccount, server} from '../../../../consts';
 import ToastExample from '../../../../ToastExample';
 import {AssetItem, Item} from "./AssetItem";
-import {View} from "react-native";
+import {Text, View} from 'react-native';
 import {Button, InputItem, List} from "@ant-design/react-native";
 
 export class CreateAuction extends React.Component {
@@ -78,7 +78,7 @@ export class CreateAuction extends React.Component {
     return (
       <List>
         <InputItem type="number" onChange={this.handleDurationChange}  value={this.state.form.duration}>
-          Duration
+          <Text style={{width: 100}}>Duration:</Text>
         </InputItem>
       </List>
     )
@@ -88,7 +88,7 @@ export class CreateAuction extends React.Component {
     return (
       <List>
         <InputItem type="number" onChange={this.handleStartPriceChange} value={this.state.form.startPrice}>
-          StartPrice
+          <Text style={{width: 100}}>Start price:</Text>
         </InputItem>
       </List>
     );
@@ -98,7 +98,7 @@ export class CreateAuction extends React.Component {
     return (
       <List>
         <InputItem type="number" onChange={this.handleDepositChange} value={this.state.form.deposit}>
-          Deposit
+          <Text style={{width: 100}}>Deposit:</Text>
         </InputItem>
       </List>
     )

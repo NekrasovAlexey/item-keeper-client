@@ -6,7 +6,7 @@ import {emptyImage} from '../../../../consts';
 
 export class AuctionItem extends React.Component {
   state = {
-    bidAmount: '0',
+    bidAmount: '',
     bidInProcess: false
   };
 
@@ -15,12 +15,17 @@ export class AuctionItem extends React.Component {
       closing_start
     }} = this.props;
 
-    return height ? `${closing_start - height} min` : '...'
+    if (!height) {
+      return '...';
+    }
+
+    const timeLeft = closing_start - height;
+    return timeLeft < 0 ? "expired" : `${timeLeft} min`;
   };
 
   handleBidChange = (amount) => {
     this.setState({
-      bidAmount: amount ? amount : '0',
+      bidAmount: amount ? amount : '',
     });
   };
 
@@ -86,7 +91,7 @@ export class AuctionItem extends React.Component {
     return (
       <List>
         <InputItem type="number" onChange={this.handleBidChange}  value={this.state.bidAmount}>
-          Bid amount
+          <Text style={{width: 100}}>Bid amount:</Text>
         </InputItem>
       </List>
     );
@@ -95,7 +100,8 @@ export class AuctionItem extends React.Component {
   renderBidForm = () => {
     return (
       <View style={{
-        flex: 1
+        flex: 1,
+        paddingTop: 20
       }}
       >
         {this.renderBidAmount()}

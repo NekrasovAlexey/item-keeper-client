@@ -30,7 +30,12 @@ export class AuctionItem extends React.Component {
       closing_start
     }} = this.props;
 
-    return height ? `${closing_start - height} min` : '...'
+    if (!height) {
+      return '...';
+    }
+
+    const timeLeft = closing_start - height;
+    return timeLeft < 0 ? "expired" : `${timeLeft} min`;
   };
 
   handleRevealResponse = (res, code, error) => {
