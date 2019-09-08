@@ -1,14 +1,24 @@
 import React from 'react';
 import {Image, View, Text} from "react-native";
-import { Button } from '@ant-design/react-native';
+import {Button, InputItem, List} from '@ant-design/react-native';
 
 export class AuctionItem extends React.Component {
+  state = {
+    bidAmount: 0
+  };
+
   getTimeLeft = () => {
     const {height, item: {
       closing_start
     }} = this.props;
 
     return height ? `${closing_start - height} min` : '...'
+  };
+
+  handleBidChange = (amount) => {
+    this.setState({
+      bidAmount: amount ? Number(amount) : 0
+    });
   };
 
   renderImage = () => {
@@ -47,29 +57,37 @@ export class AuctionItem extends React.Component {
     )
   };
 
-  renderActionsBlock = () => {
+  renderBidAmount = () => {
+    return (
+      <List>
+        <InputItem type="number" onChange={this.handleBidChange}  value={this.state.bidAmount}>
+          Bid amount
+        </InputItem>
+      </List>
+    );
+  };
+
+  renderBidForm = () => {
     return (
       <View style={{
-        flexDirection: "row"
-      }}>
-        <Button style={{flex: 1}} onPress={this.props.onCreateAuction}>
-          Create auction
-        </Button>
-        <Button style={{flex: 1}}>
-          Transfer
-        </Button>
+        flex: 1
+      }}
+      >
+        {this.renderBidAmount()}
       </View>
     )
   };
 
-  renderFullInfo = () => {
-    const {item: {
-      sender
-    }} = this.props;
+  renderActionsBlock = () => {
+    const disabled = !this.state.bidAmount;
 
     return (
-      <View>
-        <Text>Отправитель: {sender}</Text>
+      <View style={{
+        flexDirection: "row"
+      }}>
+        <Button style={{flex: 1}} disabled={disabled} onPress={this.props.onBid} type="primary">
+          Bid
+        </Button>
       </View>
     )
   };
@@ -87,8 +105,8 @@ export class AuctionItem extends React.Component {
           {this.renderImage()}
           {this.renderInfo()}
         </View>
+        {selected && this.renderBidForm()}
         {selected && this.renderActionsBlock()}
-        {selected && this.renderFullInfo()}
       </View>
     );
   }

@@ -10,6 +10,7 @@ export class Trade extends React.Component {
     auctions: [],
     searchValue: undefined,
     appliedSearchValue: undefined,
+    selectedItemId: undefined,
   };
 
   componentDidMount(): void {
@@ -52,6 +53,16 @@ export class Trade extends React.Component {
     });
   };
 
+  handleItemSelect = (id) => {
+    this.setState({
+      selectedItemId: this.state.selectedItemId === id ? undefined : id
+    });
+  };
+
+  handleBid = (id) => {
+    
+  };
+
   render () {
     return (
       <View style={{
@@ -64,7 +75,10 @@ export class Trade extends React.Component {
           onCancel={this.handleSearchClear}
           onChange={this.handleSearchChange}
         />
-        <AuctionList auctions={this.getFilteredAuctions()} />
+        <AuctionList auctions={this.getFilteredAuctions()} selectedItemId={this.state.selectedItemId}
+                     onItemSelect={this.handleItemSelect}
+          onBid={this.handleBid}
+        />
       </View>
     )
   }

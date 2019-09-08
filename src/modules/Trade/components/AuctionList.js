@@ -37,6 +37,10 @@ export class AuctionList extends React.Component {
     });
   };
 
+  handleItemSelectFactory = (id) => () => {
+    this.props.onItemSelect(id);
+  };
+
   renderEmpty = () => {
     return (
       <View style={{
@@ -53,9 +57,11 @@ export class AuctionList extends React.Component {
     return this.props.auctions.map(item => (
       <TouchableOpacity
         key={item.id}
-        // onPress={this.handleItemSelectFactory(item.id)}
+        onPress={this.handleItemSelectFactory(item.id)}
       >
-        <AuctionItem item={item} selected={this.props.selectedItemId === item.id} height={this.state.height}/>
+        <AuctionItem item={item} selected={this.props.selectedItemId === item.id} height={this.state.height}
+          onBid={this.props.onBid}
+        />
       </TouchableOpacity>
     ));
   };
