@@ -30,42 +30,51 @@ export class Trade extends React.Component {
   }
 
   getAuctions = async () => {
-    const allAuctions = axios.get(
+    const res = await axios.get(
       `${server}/auctions`
     );
-    const organizerAuctions = axios.get(
-      `${server}/${myAccount}/auctions/organizer`
-    );
-    const bidderAuctions = axios.get(
-      `${server}/${myAccount}/auctions/bidder`
-    );
-    const res = await Promise.all([
-      allAuctions,
-      organizerAuctions,
-      bidderAuctions
-    ]);
-
-    const auctions = res[0].data
-      .filter(auction => {
-        const auctionId = auction.id;
-
-        return res[1].data.find(auction => auction.id !== auctionId);
-      })
-      .map(auction => {
-        const auctionId = auction.id;
-
-        const bidder = res[2].data.find(auction => auction.id === auctionId);
-
-        return {
-          ...auction,
-          ownTag: bidder ? "bid" : undefined
-        };
-      });
 
     this.setState({
-      auctions,
+      auctions: res.data,
       initialLoading: false
     });
+
+    // const allAuctions = axios.get(
+    //   `${server}/auctions`
+    // );
+    // const organizerAuctions = axios.get(
+    //   `${server}/${myAccount}/auctions/organizer`
+    // );
+    // const bidderAuctions = axios.get(
+    //   `${server}/${myAccount}/auctions/bidder`
+    // );
+    // const res = await Promise.all([
+    //   allAuctions,
+    //   organizerAuctions,
+    //   bidderAuctions
+    // ]);
+    //
+    // const auctions = res[0].data
+    //   .filter(auction => {
+    //     const auctionId = auction.id;
+    //
+    //     return res[1].data.find(auction => auction.id !== auctionId);
+    //   })
+    //   .map(auction => {
+    //     const auctionId = auction.id;
+    //
+    //     const bidder = res[2].data.find(auction => auction.id === auctionId);
+    //
+    //     return {
+    //       ...auction,
+    //       ownTag: bidder ? "bid" : undefined
+    //     };
+    //   });
+    //
+    // this.setState({
+    //   auctions,
+    //   initialLoading: false
+    // });
   };
 
   getFilteredAuctions = () => {

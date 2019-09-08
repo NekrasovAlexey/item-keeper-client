@@ -147,9 +147,12 @@ public class ToastModule extends ReactContextBaseJavaModule {
 
            // WavesSdk.keeper().finishProcess(activity, new KeeperIntentResult.SuccessSendResult(KeeperTransactionResponse));
 
-
-            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
+            // 1
+//            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
+            // 2
 //            String seed = "toilet decade kick ready access merge skull achieve state visual diary labe";
+            // 3
+            String seed = "inch throw duty hand shiver potato bean elder mail under few rural essay velvet hunt";
             //String r = tx.getSignedStringWithSeed(seed);
             tx.setChainId((byte) 84);
             tx.sign(seed);
@@ -225,8 +228,12 @@ public class ToastModule extends ReactContextBaseJavaModule {
             // WavesSdk.keeper().finishProcess(activity, new KeeperIntentResult.SuccessSendResult(KeeperTransactionResponse));
 
 
-            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
+            // 1
+//            String seed = "scatter debris winter grid smile run erupt cube senior crunch slush depend organ floor pulse";
+            // 2
 //            String seed = "toilet decade kick ready access merge skull achieve state visual diary labe";
+            // 3
+            String seed = "inch throw duty hand shiver potato bean elder mail under few rural essay velvet hunt";
             //String r = tx.getSignedStringWithSeed(seed);
             tx.setChainId((byte) 84);
             tx.sign(seed);
