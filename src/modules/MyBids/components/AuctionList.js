@@ -54,16 +54,22 @@ export class AuctionList extends React.Component {
   };
 
   renderList = () => {
-    return this.props.auctions.map(item => (
-      <TouchableOpacity
-        key={item.id}
-        onPress={this.handleItemSelectFactory(item.id)}
-      >
-        <AuctionItem item={item} selected={this.props.selectedItemId === item.id} height={this.state.height}
-          onBid={this.props.onBid}
-        />
-      </TouchableOpacity>
-    ));
+    return this.props.auctions.map(item => {
+      const Item = <AuctionItem
+          item={item}
+          selected={this.props.selectedItemId === item.id}
+          height={this.state.height}
+        />;
+
+      return item.phase === 'BID' ?
+        Item :
+        <TouchableOpacity
+          key={item.id}
+          onPress={this.handleItemSelectFactory(item.id)}
+        >
+          {Item}
+        </TouchableOpacity>
+    });
   };
 
   render () {

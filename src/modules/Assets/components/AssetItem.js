@@ -35,7 +35,8 @@ export class AssetItem extends React.Component {
   renderActionsBlock = () => {
     return (
       <View style={{
-        flexDirection: "row"
+        flexDirection: "row",
+        paddingTop: 20
       }}>
         <Button style={{flex: 1}} onPress={this.props.onCreateAuction}>
           Create auction
@@ -65,6 +66,7 @@ export class AssetItem extends React.Component {
     return (
       <View style={{
         padding: 20,
+        backgroundColor: selected ? "#efefef" : "#fff"
       }}>
         <View style={{
           flexDirection: "row"

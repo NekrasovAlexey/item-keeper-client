@@ -72,58 +72,6 @@ export class MyBids extends React.Component {
     });
   };
 
-  handleBidResponse = (res, code, error) => {
-    if (res === "success") {
-      Toast.success('Bid created', 2);
-    } else {
-      Toast.fail(res + ' ' + code + ' ' + error, 2);
-    }
-  };
-
-  handleBid = async (auctionId, amount) => {
-    console.log('debug bid');
-    try {
-      const hashRes = await axios.post(
-        `${server}/hash`,
-        {
-          amount: amount
-        }
-      );
-      const hash = hashRes.data.hashedAmount;
-
-      console.log('debug hash ' + hash);
-
-      const storageKey = `${myAccount}:${auctionId}`;
-      await RNSecureStorage.set(storageKey, JSON.stringify(hashRes.data), {
-        accessible: "AccessibleWhenUnlocked"
-      });
-
-      console.log('debug set item');
-
-      const auction = this.state.auctions.find(item => item.id === auctionId);
-
-      const res = await axios.post(
-        `${server}/auctions/${auctionId}/bid`,
-        {
-          hash: hash,
-          deposit: auction.deposit / Math.pow(10, 8)
-        }
-      );
-
-      console.log('debug send', JSON.stringify(res.data));
-
-      ToastExample.show(
-        res.data.data.dApp,
-        res.data.data.call.function,
-        res.data.data.call.args,
-        res.data.data.payment,
-        this.handleBidResponse
-      );
-    } catch (e) {
-      console.log('debug error ' + e.message);
-    }
-  };
-
   render () {
     return (
       <View style={{
@@ -146,7 +94,6 @@ export class MyBids extends React.Component {
           </View> :
         <AuctionList auctions={this.getFilteredAuctions()} selectedItemId={this.state.selectedItemId}
                      onItemSelect={this.handleItemSelect}
-                     onBid={this.handleBid}
         />}
       </View>
     )

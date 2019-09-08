@@ -113,7 +113,8 @@ export class AuctionItem extends React.Component {
 
     return (
       <View style={{
-        flexDirection: "row"
+        flexDirection: "row",
+        paddingTop: 20
       }}>
         <Button
           loading={this.state.bidInProcess}
@@ -130,6 +131,7 @@ export class AuctionItem extends React.Component {
     return (
       <View style={{
         padding: 20,
+        backgroundColor: selected ? "#efefef" : "#fff"
       }}>
         <View style={{
           flexDirection: "row"

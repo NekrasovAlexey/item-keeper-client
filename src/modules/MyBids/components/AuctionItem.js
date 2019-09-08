@@ -1,9 +1,11 @@
 import Toast from '@ant-design/react-native/lib/toast';
+import axios from 'axios';
 import React from 'react';
 import {Image, View, Text} from "react-native";
 import {Button, InputItem, List} from '@ant-design/react-native';
 import RNSecureStorage from "rn-secure-storage";
-import {emptyImage, myAccount} from '../../../../consts';
+import {emptyImage, myAccount, server} from '../../../../consts';
+import ToastExample from '../../../../ToastExample';
 
 export class AuctionItem extends React.Component {
   state = {
@@ -31,8 +33,64 @@ export class AuctionItem extends React.Component {
     return height ? `${closing_start - height} min` : '...'
   };
 
-  handleReveal = () => {
-    this.props.onReveal(this.props.item.id);
+  handleRevealResponse = (res, code, error) => {
+    if (res === "success") {
+      Toast.success('Success reveal', 2);
+    } else {
+      Toast.fail(res + ' ' + code + ' ' + error, 2);
+    }
+  };
+
+  handleReveal = async () => {
+    const {item: {
+      id
+    }} = this.props;
+
+    const storageKey = `${myAccount}:${this.props.item.id}`;
+    const bidData = await RNSecureStorage.get(storageKey);
+    const {salt, amount} = JSON.stringify(bidData);
+
+    const res = await axios.post(
+      `${server}/auctions/${id}/reveal`,
+      {
+        salt: salt,
+        amount: amount / Math.pow(10, 8)
+      }
+    );
+
+    ToastExample.show(
+      res.data.data.dApp,
+      res.data.data.call.function,
+      res.data.data.call.args,
+      res.data.data.payment,
+      this.handleRevealResponse
+    );
+  };
+
+  handleWithdrawResponse = (res, code, error) => {
+    if (res === "success") {
+      Toast.success('Success withdraw', 2);
+    } else {
+      Toast.fail(res + ' ' + code + ' ' + error, 2);
+    }
+  };
+
+  handleWithdraw = async () => {
+    const {item: {
+      id
+    }} = this.props;
+
+    const res = await axios.post(
+      `${server}/auctions/${id}/withdraw`
+    );
+
+    ToastExample.show(
+      res.data.data.dApp,
+      res.data.data.call.function,
+      res.data.data.call.args,
+      res.data.data.payment,
+      this.handleWithdrawResponse
+    );
   };
 
   renderImage = () => {
@@ -52,7 +110,8 @@ export class AuctionItem extends React.Component {
       lot: {
         name
       },
-      unrevealed_count
+      unrevealed_count,
+      phase
     }} = this.props;
 
     return (
@@ -65,20 +124,29 @@ export class AuctionItem extends React.Component {
         <Text>{`Time left for bids: ${this.getTimeLeft()}`}</Text>
         <Text>{`My bid: ${this.state.myBid}`}</Text>
         <Text>{`Bids: ${unrevealed_count}`}</Text>
+        <Text>{`Phase: ${phase}`}</Text>
       </View>
     )
   };
 
   renderActionsBlock = () => {
+    const {item: {
+      phase
+    }} = this.props;
+
     return (
       <View style={{
-        flexDirection: "row"
+        flexDirection: "row",
+        paddingTop: 20
       }}>
-        <Button
-          loading={this.state.bidInProcess}
+        {phase === "REVEAL" && <Button
           style={{flex: 1}} onPress={this.handleReveal} type="primary">
           Reveal
-        </Button>
+        </Button>}
+        {phase === "SETTLE" && <Button
+          style={{flex: 1}} onPress={this.handleWithdraw} type="primary">
+          Withdraw
+        </Button>}
       </View>
     )
   };
@@ -91,6 +159,7 @@ export class AuctionItem extends React.Component {
     return (
       <View style={{
         padding: 20,
+        backgroundColor: selected ? "#efefef" : "#fff"
       }}>
         <View style={{
           flexDirection: "row"
@@ -98,7 +167,7 @@ export class AuctionItem extends React.Component {
           {this.renderImage()}
           {this.renderInfo()}
         </View>
-        {selected && phase === "REVEAL" && this.renderActionsBlock()}
+        {selected && phase !== "BID" && this.renderActionsBlock()}
       </View>
     );
   }
