@@ -10,7 +10,13 @@ export class AssetItem extends React.Component {
     }} = this.props;
 
     return (
-      <Image source={{uri: description || emptyImage}} style={{ width: 100, height: 100 }}/>
+      <Image source={{uri: description || emptyImage}} style={{
+        alignSelf: 'center',
+        height: 100,
+        width: 150,
+      }}
+        resizeMode="contain"
+      />
     );
   };
 
@@ -68,7 +74,8 @@ export class AssetItem extends React.Component {
         backgroundColor: selected ? "#efefef" : "#fff"
       }}>
         <View style={{
-          flexDirection: "row"
+          flexDirection: "row",
+          alignItems: "center"
         }}>
           {this.renderImage()}
           {this.renderInfo()}

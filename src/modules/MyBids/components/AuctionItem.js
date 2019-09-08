@@ -26,16 +26,13 @@ export class AuctionItem extends React.Component {
   };
 
   getTimeLeft = () => {
-    const {height, item: {
-      closing_start
-    }} = this.props;
+    const {
+      item: {
+        deltaReveal
+      }
+    } = this.props;
 
-    if (!height) {
-      return '...';
-    }
-
-    const timeLeft = closing_start - height;
-    return timeLeft < 0 ? "expired" : `${timeLeft} min`;
+    return deltaReveal > 0 ? `${deltaReveal} min` : "expired";
   };
 
   handleRevealResponse = (res, code, error) => {
@@ -106,7 +103,13 @@ export class AuctionItem extends React.Component {
     }} = this.props;
 
     return (
-      <Image source={{uri: description || emptyImage}} style={{ width: 100, height: 100 }}/>
+      <Image source={{uri: description || emptyImage}} style={{
+        alignSelf: 'center',
+        height: 100,
+        width: 150,
+      }}
+             resizeMode="contain"
+      />
     );
   };
 
@@ -126,7 +129,7 @@ export class AuctionItem extends React.Component {
         justifyContent: "center"
       }}>
         <Text style={{fontSize: 18}}>{name}</Text>
-        <Text>{`Time left for bids: ${this.getTimeLeft()}`}</Text>
+        <Text>{`Time left: ${this.getTimeLeft()}`}</Text>
         <Text>{`My bid: ${this.state.myBid}`}</Text>
         <Text>{`Bids: ${unrevealed_count}`}</Text>
         <Text>{`Phase: ${phase}`}</Text>

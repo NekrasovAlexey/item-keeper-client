@@ -11,16 +11,23 @@ export class AuctionItem extends React.Component {
   };
 
   getTimeLeft = () => {
-    const {height, item: {
-      closing_start
-    }} = this.props;
+    // const {height, item: {
+    //   closing_start
+    // }} = this.props;
+    //
+    // if (!height) {
+    //   return '...';
+    // }
+    //
+    // const timeLeft = closing_start - height;
+    // return timeLeft < 0 ? "expired" : `${timeLeft} min`;
+    const {
+      item: {
+        deltaReveal
+      }
+    } = this.props;
 
-    if (!height) {
-      return '...';
-    }
-
-    const timeLeft = closing_start - height;
-    return timeLeft < 0 ? "expired" : `${timeLeft} min`;
+    return deltaReveal > 0 ? `${deltaReveal} min` : "expired";
   };
 
   handleBidChange = (amount) => {
@@ -58,7 +65,13 @@ export class AuctionItem extends React.Component {
     }} = this.props;
 
     return (
-      <Image source={{uri: description || emptyImage}} style={{ width: 100, height: 100 }}/>
+      <Image source={{uri: description || emptyImage}} style={{
+        alignSelf: 'center',
+        height: 100,
+        width: 150,
+      }}
+             resizeMode="contain"
+      />
     );
   };
 
@@ -69,7 +82,8 @@ export class AuctionItem extends React.Component {
       },
       startPrice,
       deposit,
-      unrevealed_count
+      unrevealed_count,
+      orgTag
     }} = this.props;
 
     return (
@@ -78,8 +92,8 @@ export class AuctionItem extends React.Component {
         flex: 1,
         justifyContent: "center"
       }}>
-        <Text style={{fontSize: 18}}>{name}</Text>
-        <Text>{`Time left for bids: ${this.getTimeLeft()}`}</Text>
+        <Text style={{fontSize: 18}}>{name}{orgTag ? `&nbsp;-&nbsp;${orgTag}` : ''}</Text>
+        <Text>{`Time left: ${this.getTimeLeft()}`}</Text>
         <Text>{`Start bid: ${startPrice / Math.pow(10, 8)}`}</Text>
         <Text>{`Max bid: ${deposit / Math.pow(10, 8)}`}</Text>
         <Text>{`Bids: ${unrevealed_count}`}</Text>
@@ -136,7 +150,7 @@ export class AuctionItem extends React.Component {
   };
 
   render () {
-    const {selected} = this.props;
+    const {selected, item: {orgTag}} = this.props;
 
     return (
       <View style={{
@@ -149,8 +163,8 @@ export class AuctionItem extends React.Component {
           {this.renderImage()}
           {this.renderInfo()}
         </View>
-        {selected && this.renderBidForm()}
-        {selected && this.renderActionsBlock()}
+        {selected && orgTag !== "org" && this.renderBidForm()}
+        {selected && orgTag !== "org" && this.renderActionsBlock()}
       </View>
     );
   }

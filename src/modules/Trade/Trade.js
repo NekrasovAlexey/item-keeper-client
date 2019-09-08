@@ -30,12 +30,35 @@ export class Trade extends React.Component {
   }
 
   getAuctions = async () => {
-    const res = await axios.get(
+    const allAuctions = axios.get(
       `${server}/auctions`
     );
+    const organizerAuctions = axios.get(
+      `${server}/${myAccount}/auctions/organizer`
+    );
+    const bidderAuctions = axios.get(
+      `${server}/${myAccount}/auctions/bidder`
+    );
+    const res = await Promise.all([
+      allAuctions,
+      organizerAuctions,
+      bidderAuctions
+    ]);
+
+    const auctions = res[0].data.map(auction => {
+      const auctionId = auction.id;
+
+      const organizer = res[1].data.find(auction => auction.id === auctionId);
+      const bidder = res[2].data.find(auction => auction.id === auctionId);
+
+      return {
+        ...auction,
+        ownTag: organizer ? "org" : bidder ? "bid" : undefined
+      };
+    });
 
     this.setState({
-      auctions: res.data,
+      auctions,
       initialLoading: false
     });
   };
@@ -44,7 +67,7 @@ export class Trade extends React.Component {
     const {appliedSearchValue, auctions} = this.state;
 
     return appliedSearchValue ? auctions.filter(auction => {
-      return auction.lot.name.includes(appliedSearchValue);
+      return auction.phase === "BID" && auction.lot.name.includes(appliedSearchValue);
     }) : auctions;
   };
 
@@ -68,12 +91,13 @@ export class Trade extends React.Component {
 
   handleItemSelect = (id) => {
     this.setState({
-      selectedItemId: this.state.selectedItemId === id ? undefined : id
+      selectedItemId: !id || this.state.selectedItemId === id ? undefined : id
     });
   };
 
   handleBidResponse = (res, code, error) => {
     if (res === "success") {
+      this.handleItemSelect();
       Toast.success('Bid created', 2);
     } else {
       Toast.fail(res + ' ' + code + ' ' + error, 2);

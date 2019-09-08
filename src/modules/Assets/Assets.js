@@ -80,6 +80,7 @@ export class Assets extends React.Component {
 
   handleCloseAuction = (success) => {
     this.setState({
+      selectedItemId: undefined,
       screen: "VIEW"
     }, () => {
       success && this.getAssets()
