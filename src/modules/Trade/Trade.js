@@ -3,7 +3,7 @@ import Toast from '@ant-design/react-native/lib/toast';
 import axios from 'axios';
 import React from 'react';
 import {Text, View} from "react-native";
-import {myAccount, server} from '../../../consts';
+import {myAccount, refreshTimeout, server} from '../../../consts';
 import ToastExample from '../../../ToastExample';
 import {AuctionList} from './components/AuctionList';
 import RNSecureStorage from 'rn-secure-storage'
@@ -16,8 +16,16 @@ export class Trade extends React.Component {
     selectedItemId: undefined,
   };
 
+  refreshInterval;
+
+  componentWillUnmount(): void {
+    this.refreshInterval && clearInterval(this.refreshInterval);
+  }
+
   componentDidMount(): void {
     this.getAuctions();
+
+    this.refreshInterval = setInterval(this.getAuctions, refreshTimeout);
   }
 
   getAuctions = async () => {

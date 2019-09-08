@@ -2,3 +2,5 @@
 export const myAccount = "3N7vkrDS5SshppzygYW9X7khMBmAKRt8yu1";
 
 export const server = "http://51.15.211.88:3000";
+
+export const refreshTimeout = 10 * 1000;

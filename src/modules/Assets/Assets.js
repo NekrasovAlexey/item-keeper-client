@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from "react-native";
 import { SearchBar } from '@ant-design/react-native';
-import {server, myAccount} from '../../../consts';
+import {server, myAccount, refreshTimeout} from '../../../consts';
 import {AssetList} from "./components/AssetList";
 import {AssetItem} from "./components/AssetItem";
 import {CreateAuction} from "./components/CreateAuction";
@@ -16,8 +16,16 @@ export class Assets extends React.Component {
     screen: "VIEW",
   };
 
+  refreshInterval;
+
+  componentWillUnmount(): void {
+    this.refreshInterval && clearInterval(this.refreshInterval);
+  }
+
   componentDidMount(): void {
     this.getAssets();
+
+    this.refreshInterval = setInterval(this.getAssets, refreshTimeout);
   }
 
   getAssets = async () => {
