@@ -53,7 +53,7 @@ export class AuctionItem extends React.Component {
 
     const storageKey = `${myAccount}:${this.props.item.id}`;
     const bidData = await RNSecureStorage.get(storageKey);
-    const {salt, amount} = JSON.stringify(bidData);
+    const {salt, amount} = JSON.parse(bidData);
 
     const res = await axios.post(
       `${server}/auctions/${id}/reveal`,
