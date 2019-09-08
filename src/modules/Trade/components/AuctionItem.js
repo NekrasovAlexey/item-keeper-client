@@ -102,7 +102,12 @@ export class AuctionItem extends React.Component {
   };
 
   renderActionsBlock = () => {
-    const disabled = !this.state.bidAmount;
+    const {item: {
+      deposit
+    }} = this.props;
+    const {bidAmount} = this.state;
+
+    const disabled = !bidAmount || Number(bidAmount) > (deposit / Math.pow(10, 8));
 
     return (
       <View style={{

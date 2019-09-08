@@ -152,7 +152,7 @@ public class ToastModule extends ReactContextBaseJavaModule {
             tx.sign(seed);
 
             Gson gson = new Gson();
-            String txJson = gson.toJson(tx);
+            String txJson = gson.toJson(tx).replace("\"\"", "null");
 
 
 
