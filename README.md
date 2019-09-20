@@ -39,7 +39,12 @@ react-native run-android
 
 ## Настройка
 Текущая реализация содержит в себе токен аккаунта.
-Найти их можно в файлах ***[const.js](https://github.com/NekrasovAlexey/item-keeper-client/blob/master/consts.js)*** и ***[/android/app/src/main/java/com/awesomeproject/ToastModule.java](https://github.com/NekrasovAlexey/item-keeper-client/blob/master/android/app/src/main/java/com/awesomeproject/ToastModule.java)*** в переменных myAccount и seed соответственно.
+Найти их можно в файлах ***[consts.js](https://github.com/NekrasovAlexey/item-keeper-client/blob/master/consts.js)*** и ***[/android/app/src/main/java/com/awesomeproject/ToastModule.java](https://github.com/NekrasovAlexey/item-keeper-client/blob/master/android/app/src/main/java/com/awesomeproject/ToastModule.java)*** в переменных myAccount и seed соответственно.
+
+## Back-end
+[Репозиторий](https://bitbucket.org/execc/item-keeper-backend/src/master/)
+
+Адрес сервера для приложения указывается в файле ***[consts.js](https://github.com/NekrasovAlexey/item-keeper-client/blob/master/consts.js)*** в переменной ***server***
 
 ## Контакты
 Telegram: ***@avnekr***
